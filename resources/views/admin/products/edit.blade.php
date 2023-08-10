@@ -7,6 +7,10 @@
 
        <div class="row">
             <div class="col-md-12">
+                   @if(session('message'))
+
+                                        <h4 class="alert alert-success mb-2">{{session('message')}}</h4>
+                                @endif
                     <div class="card">
                               <div class="card-header">
                                         <h3>Edit Product
@@ -15,6 +19,7 @@
                               </div>
 
                               <div class="card-body">
+                             
                                 @if($errors->all())
                                 <div class="alert alert-warning">
                                         @foreach($errors->all() as $error)
@@ -145,6 +150,7 @@
                                                   
                                                   <img src="{{ asset($image->image) }}" style="width: 80px; height:80px;" 
                                                   class="me-4 border" alt="img" />
+                                                  <a href="{{url('admin/product-image/'.$image->id.'/delete')}}">Remove</a>
                                                   @endforeach
                                                   @else
                                                   <h5>No image Added</h5>

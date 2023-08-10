@@ -6,8 +6,10 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\ProductFormRequest;
 
 class ProductController extends Controller
@@ -119,5 +121,30 @@ class ProductController extends Controller
             return redirect('admin/products')->with('message', 'No such Product Id Found');
         }
 
+
+    }
+
+    public function destroyImage(int $product_image_id)
+    {
+        $productImage = ProductImage::findOrFail($product_image_id);
+
+            if(File::exists($productImage->image)){
+                File::delete($productImage->image);
+            }
+        $productImage->delete();
+        return redirect()->back()->with('message', 'Product Image deleted');
+    }
+    public function destroy (int $product_id) {
+        $product = Product::findOrFail($product_id);
+        if($product->productImages()){
+            foreach($product->productImages as $images){
+                if(File::exists($images->image)){
+                    File::delete($images->image);
+                }
+            }
+        }
+        $product->delete();
+        return redirect()->back()->with('message', 'Product deleted with all the images');
+        
     }
 }
