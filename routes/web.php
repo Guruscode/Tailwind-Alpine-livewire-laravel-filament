@@ -2,6 +2,8 @@
 
 use App\Http\Livewire\Register;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\ProductController;
 
 /*
@@ -15,11 +17,15 @@ use App\Http\Controllers\Admin\ProductController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 Route::get('/register', Register::class);
 Auth::routes();
+
+Route::get('/', [App\Http\Controllers\Frontend\FrontendController::class, 'index']);
+
+Route::get('/collections', [App\Http\Controllers\Frontend\FrontendController::class, 'categories']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -27,8 +33,18 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function () {
     
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index']);
 
-    // Categories Routes
 
+        Route::controller(SliderController::class)->group(function () {
+
+        Route::get('/sliders', 'index');
+        Route::get('/sliders/create', 'create');
+        Route::post('/sliders/create', 'store');
+        
+    });
+
+
+
+    // Categories Routes
     Route::controller(App\Http\Controllers\Admin\CategoryController::class)->group(function () {
         Route::get('/category', 'index');
         Route::get('/category/create', 'create');
@@ -50,9 +66,13 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function () {
       
     });
 
-    Route::controller(App\Http\Controllers\Admin\ColorController::class)->group(function () {
+    Route::controller(ColorController::class)->group(function () {
         Route::get('/colors', 'index');
-        Route::get('/products/create', 'create');
+        Route::get('/colors/create', 'create');
+        Route::post('/colors/create', 'store');
+        Route::get('/colors/{color}/edit', 'edit');
+        Route::put('/colors/{color_id}', 'update');
+        Route::get('/colors/{color_id}/delete', 'destroy');
   
     });
 
